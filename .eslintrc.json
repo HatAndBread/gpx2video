@@ -1,0 +1,26 @@
+{
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "extends": ["eslint:recommended"],
+  "parserOptions": {
+    "requireConfigFile": false,
+    "ecmaVersion": 9,
+    "sourceType": "module",
+    "ecmaFeatures": {},
+    "babelOptions": {
+      "plugins": [
+        [
+          "@babel/plugin-proposal-pipeline-operator",
+          { "topicToken": "^^", "proposal": "hack" }
+        ]
+      ]
+    }
+  },
+  "parser": "@babel/eslint-parser",
+  "rules": {
+    "no-unused-vars": "warn"
+  }
+}
