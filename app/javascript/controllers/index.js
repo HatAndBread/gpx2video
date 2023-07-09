@@ -3,6 +3,10 @@
 // ./bin/rails generate stimulus controllerName
 
 import { application } from "./application"
-
+import MapController from "./map_controller"
+import MapEditorController from "./map_editor_controller"
 import FileInputController from "./file_input_controller"
+
 application.register("file_input", FileInputController)
+application.register("map", MapController)
+application.register("map_editor", MapEditorController)

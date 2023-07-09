@@ -1,4 +1,4 @@
 <div class="text-xl bg-primary">Hello!</div>
-<%= render "shared/file_input" %>
 
-<div id="map" class="w-screen"></div>
+<input type="file" class="file-input w-full max-w-xs" accept=".gpx" data-controller="file_input" data-action="change->file_input#change"/>
+<div class="w-screen" data-pk="<%= ENV["X"] %>" data-controller="map_editor" data-action="drawRoute@window->map_editor#drawRoute"></div>
