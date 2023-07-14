@@ -1,8 +1,12 @@
 import MapController from "./map_controller";
 import {animatePath} from "../lib/animate-path";
+import {loadScript} from "../lib/load-script";
+import {download} from "../lib/download";
+import {setNow} from "mapbox-gl";
 
 export default class extends MapController {
-  drawRoute(e) {
+  async drawRoute(e) {
+    await this.setEncoder();
     e.detail.features.forEach((data) => {
       const { name } = data.properties;
       switch (data.geometry.type.toLowerCase()) {
@@ -61,5 +65,24 @@ export default class extends MapController {
         "line-width": 5,
       },
     };
+  }
+
+  async setEncoder() {
+    await loadScript("/mp4-encode.js");
+    this.encoder = await window.HME.createH264MP4Encoder();
+    this.encoder.width = 100;
+    this.encoder.height = 100;
+    this.frame();
+  }
+
+  async frame() {
+    this.encoder.initialize();
+    const pixelArr = new Uint8Array(this.encoder.width * this.encoder.height * 4).fill(128);
+    this.gl.readPixels(0, 0, this.encoder.width, this.encoder.height, this.gl.RGBA, this.gl.UNSIGNED_BYTE, pixelArr); // read pixels into encoder
+    this.encoder.addFrameRgba(pixelArr)
+    console.log(pixelArr);
+    this.encoder.finalize();
+    const uint8Array = this.encoder.FS.readFile(this.encoder.outputFilename);
+    download(URL.createObjectURL(new Blob([uint8Array], { type: "video/mp4" })))
   }
 }

@@ -3,7 +3,6 @@ import mapboxgl, {LngLatBounds} from "mapbox-gl";
 import debounce from "lodash.debounce";
 import useStyleUrls from "../lib/use-style-urls";
 import maxCoordinates from "../lib/max-coordinates";
-import {animatePath} from "../lib/animate-path";
 
 export default class extends Controller {
   connect() {
@@ -22,10 +21,17 @@ export default class extends Controller {
   setMap() {
     this.map = new mapboxgl.Map({
       container: this.element,
+      projection: "globe",
+      preserveDrawingBuffer: true,
       style: this.satelliteURL, // style URL
       center: [139.6503, 35.6762], // starting position [lng, lat]
       zoom: 9, // starting zoom
     })
+    window.ctx = this.map.painter.context
+    this.gl = this.map.painter.context.gl;
+    window.gl = this.gl
+    console.log(this.gl)
+    this.setSize();
   }
 
   set3D() {
@@ -43,6 +49,12 @@ export default class extends Controller {
     window.pageYOffset + this.element.getBoundingClientRect().top
       |> (this.element.style.height = `${window.innerHeight - ^^}px`);
     this.map.resize();
+    this.setSize()
+  }
+
+  setSize(){
+    this.width = this.gl.drawingBufferWidth;
+    this.height = this.gl.drawingBufferHeight;
   }
 
   adjustSizeOnResize() {
